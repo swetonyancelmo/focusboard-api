@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/focusboard
+    url: jdbc:postgresql://localhost:5433/focusboard
     username: ${POSTGRES_USER:focusboard_user}
     password: ${POSTGRES_PASSWORD:focusboard_pass}
     driver-class-name: org.postgresql.Driver
@@ -25,5 +25,3 @@ logging:
   level:
     com.taskflow: DEBUG
     org.hibernate.SQL: DEBUG
-
-kind: Application
