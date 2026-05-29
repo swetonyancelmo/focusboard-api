@@ -1,5 +1,6 @@
 package com.swetonyancelmo.focusboard.config.security;
 
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -18,11 +19,13 @@ public class JwtService {
     @Value("${security.jwt.secret}")
     private String secret;
 
+    private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15;
+
     public String generateToken(UserDetails user) {
         return Jwts.builder()
                 .subject(user.getUsername())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 86400000))
+                .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
                 .signWith(getKey())
                 .compact();
     }
@@ -33,7 +36,11 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, UserDetails user) {
-        return extractUsername(token).equals(user.getUsername());
+        try {
+            return extractUsername(token).equals(user.getUsername());
+        } catch (JwtException e) {
+            return false;
+        }
     }
 
     private SecretKey getKey() {
