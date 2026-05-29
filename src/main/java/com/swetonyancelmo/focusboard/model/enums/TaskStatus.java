@@ -1,0 +1,5 @@
+package com.swetonyancelmo.focusboard.model.enums;
+
+public enum TaskStatus {
+    TODO, IN_PROGRESS, DONE
+}
