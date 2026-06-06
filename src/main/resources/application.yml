@@ -24,6 +24,7 @@ server:
 security:
   jwt:
     secret: "81COWawCOA88uMxO-IerHQrmfk_xJkHU9VRsbbaw3fs"
+    refresh-token-expiration-days: 7
 
 logging:
   level:
