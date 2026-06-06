@@ -10,11 +10,12 @@ import com.swetonyancelmo.focusboard.model.enums.TaskPriority;
 import com.swetonyancelmo.focusboard.model.enums.TaskStatus;
 import com.swetonyancelmo.focusboard.repository.TaskRepository;
 import com.swetonyancelmo.focusboard.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,10 +26,8 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
 
-    public List<TaskResponseDTO> findAllTasks(UUID userId) {
-        return taskRepository.findByUserId(userId).stream()
-                .map(this::toResponseDTO)
-                .toList();
+    public Page<TaskResponseDTO> findAllTasks(UUID userId, Pageable pageable) {
+        return taskRepository.findByUserId(userId, pageable).map(this::toResponseDTO);
     }
 
     @Transactional

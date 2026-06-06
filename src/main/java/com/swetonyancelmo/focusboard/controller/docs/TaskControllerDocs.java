@@ -10,12 +10,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface TaskControllerDocs {
@@ -29,7 +31,12 @@ public interface TaskControllerDocs {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor",
                     content = @Content)
     })
-    ResponseEntity<List<TaskResponseDTO>> getAllTasks(@AuthenticationPrincipal User user);
+    ResponseEntity<Page<TaskResponseDTO>> getAllTasks(
+            @AuthenticationPrincipal User user,
+            @RequestParam(value = "page", defaultValue = "0") @Min(0) Integer page,
+            @RequestParam(value = "size", defaultValue = "12") @Positive Integer size,
+            @RequestParam(value = "direction", defaultValue = "asc") String direction
+    );
 
     @Operation(summary = "Criar Tarefa", description = "Criar uma nova tarefa para o usuário")
     @ApiResponses(value = {
