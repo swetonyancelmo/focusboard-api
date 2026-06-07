@@ -1,5 +1,6 @@
 package com.swetonyancelmo.focusboard.service;
 
+import com.swetonyancelmo.focusboard.common.RestPage;
 import com.swetonyancelmo.focusboard.dtos.request.CreateTaskRequestDTO;
 import com.swetonyancelmo.focusboard.dtos.request.UpdateTaskRequestDTO;
 import com.swetonyancelmo.focusboard.dtos.response.TaskResponseDTO;
@@ -10,7 +11,8 @@ import com.swetonyancelmo.focusboard.model.enums.TaskPriority;
 import com.swetonyancelmo.focusboard.model.enums.TaskStatus;
 import com.swetonyancelmo.focusboard.repository.TaskRepository;
 import com.swetonyancelmo.focusboard.repository.UserRepository;
-import org.springframework.data.domain.Page;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,11 +28,13 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
 
-    public Page<TaskResponseDTO> findAllTasks(UUID userId, Pageable pageable) {
-        return taskRepository.findByUserId(userId, pageable).map(this::toResponseDTO);
+    @Cacheable(value = "tasks", key = "#userId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
+    public RestPage<TaskResponseDTO> findAllTasks(UUID userId, Pageable pageable) {
+        return new RestPage<>(taskRepository.findByUserId(userId, pageable).map(this::toResponseDTO));
     }
 
     @Transactional
+    @CacheEvict(value = "tasks", allEntries = true)
     public TaskResponseDTO createTask(CreateTaskRequestDTO dto, UUID userId) {
         Task task = new Task();
         task.setTitle(dto.title());
@@ -45,6 +49,7 @@ public class TaskService {
     }
 
     @Transactional
+    @CacheEvict(value = "tasks", allEntries = true)
     public TaskResponseDTO updateTask(UUID taskId, UpdateTaskRequestDTO dto, UUID userId) {
         Task task = taskRepository.findByIdAndUserId(taskId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Task não encontrada"));
@@ -58,6 +63,7 @@ public class TaskService {
     }
 
     @Transactional
+    @CacheEvict(value = "tasks", allEntries = true)
     public void deleteTask(UUID taskId, UUID userId) {
         int deleted = taskRepository.deleteByIdAndUserId(taskId, userId);
 
