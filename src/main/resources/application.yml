@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/focusboard
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/focusboard}
     username: ${POSTGRES_USER:focusboard_user}
     password: ${POSTGRES_PASSWORD:focusboard_pass}
     driver-class-name: org.postgresql.Driver
@@ -20,15 +20,16 @@ spring:
 
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
 
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 security:
   jwt:
-    secret: "81COWawCOA88uMxO-IerHQrmfk_xJkHU9VRsbbaw3fs"
+    secret: ${JWT_SECRET:81COWawCOA88uMxO-IerHQrmfk_xJkHU9VRsbbaw3fs}
     refresh-token-expiration-days: 7
 
 logging:
