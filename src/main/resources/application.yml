@@ -37,5 +37,5 @@ cors:
 
 logging:
   level:
-    com.taskflow: DEBUG
+    com.swetonyancelmo.focusboard: DEBUG
     org.hibernate.SQL: DEBUG
