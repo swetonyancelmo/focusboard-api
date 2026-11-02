@@ -120,7 +120,10 @@ This spins up:
 
 ### Running the Application
 
+`JWT_SECRET` is **required** (a Base64-encoded key of at least 256 bits). The app will not start without it. A template is available in `.env.example`.
+
 ```bash
+export JWT_SECRET=$(openssl rand -base64 32)
 mvn spring-boot:run
 ```
 
@@ -487,11 +490,10 @@ spring:
     hibernate:
       ddl-auto: validate
 
-app:
+security:
   jwt:
-    secret: <base64-encoded-secret>
-  refresh-token:
-    expiration-days: 7
+    secret: ${JWT_SECRET}            # required, no default
+    refresh-token-expiration-days: 7
 ```
 
 Docker Compose credentials:
