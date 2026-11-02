@@ -29,7 +29,9 @@ server:
 
 security:
   jwt:
-    secret: ${JWT_SECRET:81COWawCOA88uMxO-IerHQrmfk_xJkHU9VRsbbaw3fs}
+    # Required, no default on purpose: if JWT_SECRET is missing the app fails to
+    # start instead of signing tokens with a publicly known key. See .env.example.
+    secret: ${JWT_SECRET}
     refresh-token-expiration-days: 7
 
 cors:
